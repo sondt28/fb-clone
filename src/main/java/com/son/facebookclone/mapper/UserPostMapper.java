@@ -31,7 +31,6 @@ public abstract class UserPostMapper {
 	@Mapping(target = "surname", source = "userProfile.surname")
 	@Mapping(target = "totalComment", expression = "java(getTotalComment(userPost))")
 	@Mapping(target = "totalLike", expression = "java(getTotalLike(userPost))")
-	@Mapping(target = "photo", source = "image.path")
 	public abstract PostResponse postToPostResponse(UserPost userPost);
 	
 	public Integer getTotalLike(UserPost post) {

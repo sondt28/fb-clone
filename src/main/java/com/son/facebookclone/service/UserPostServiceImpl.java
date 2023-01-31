@@ -1,6 +1,5 @@
 package com.son.facebookclone.service;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,22 +7,17 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.son.facebookclone.dto.PostRequest;
 import com.son.facebookclone.dto.PostResponse;
 import com.son.facebookclone.exceptions.UserPostException;
-import com.son.facebookclone.exceptions.UserPostImageException;
 import com.son.facebookclone.exceptions.UserPostNotFoundException;
 import com.son.facebookclone.exceptions.UserProfileNotFoundException;
 import com.son.facebookclone.mapper.UserPostMapper;
 import com.son.facebookclone.model.UserPost;
-import com.son.facebookclone.model.UserPostImage;
 import com.son.facebookclone.model.UserProfile;
-import com.son.facebookclone.repository.UserPostImageRepository;
 import com.son.facebookclone.repository.UserPostRepository;
 import com.son.facebookclone.repository.UserProfileRepository;
-import com.son.facebookclone.utils.FileUploadHelper;
 
 @Service
 public class UserPostServiceImpl implements UserPostService {
@@ -33,9 +27,6 @@ public class UserPostServiceImpl implements UserPostService {
 	
 	@Autowired
 	private UserProfileRepository userProfileRepository;
-	
-	@Autowired
-	private UserPostImageRepository userPostImageRepository;
 	
 	@Autowired
 	private UserPostMapper postMapper;
@@ -98,9 +89,6 @@ public class UserPostServiceImpl implements UserPostService {
 			throw new UserPostException("You are not owner of this post!");
 		
 		userPostRepository.delete(post);
-		
-		if (post.getImage() != null) 
-			FileUploadHelper.deleteFile(post.getId(), post.getImage().getPath());
 	}
 
 	@Override
@@ -112,16 +100,6 @@ public class UserPostServiceImpl implements UserPostService {
 		userPostRepository.save(post);
 	}
 
-	@Override
-	public void addPostImage(long postId, MultipartFile file) {
-		UserPost post = userPostRepository.findById(postId)
-				.orElseThrow(() -> new UserPostNotFoundException("Post not found!"));
-		
-		if (post.getImage() == null) 
-			saveImage(file, post);
-		else 
-			throw new UserPostImageException("Post can only add one photo.");
-	}
 
 	@Override
 	public void updatePost(long postId, PostRequest postRequest) {
@@ -134,49 +112,6 @@ public class UserPostServiceImpl implements UserPostService {
 		post.setWrittenText(postRequest.getWrittenText());
 		userPostRepository.save(post);
 		
-	}
-
-	@Override
-	public void updateImage(long postId, MultipartFile file) {
-		UserPost post = userPostRepository.findById(postId)
-				.orElseThrow(() -> new UserPostNotFoundException("Post not found!"));
-		
-		if (post.getUserProfile() != authService.getCurrentUserProfile())
-			throw new UserPostException("You are not owner of this post!");
-		
-		if (post.getImage() != null) {
-			try {
-				FileUploadHelper.updateFile(post.getId(), post.getImage().getPath(), file);
-				
-				UserPostImage image = userPostImageRepository
-							.findById(post.getImage().getId())
-							.orElseThrow(() -> new UserPostImageException("image not found."));
-				
-				image.setPath(file.getOriginalFilename());
-				
-				post.setImage(image);
-				
-				userPostRepository.save(post);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else {
-			saveImage(file, post);
-		}	
-	}
-
-	private void saveImage(MultipartFile file, UserPost post) {
-		try {
-			FileUploadHelper.saveFile(post.getId(), file);
-			
-			UserPostImage image = new UserPostImage();
-			image.setPath(file.getOriginalFilename());
-			
-			post.setImage(image);
-			userPostRepository.save(post);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	private List<PostResponse> getPostByOwnUserProfile() {

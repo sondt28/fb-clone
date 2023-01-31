@@ -15,7 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -49,10 +48,6 @@ public class UserPost {
 			   fetch = FetchType.LAZY,
 			   mappedBy = "userPost")
 	private Set<PostLike> postLikes;
-	
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "image_id")
-	private UserPostImage image;
 	
 	@OneToMany(cascade = CascadeType.ALL, 
 			   fetch = FetchType.LAZY,

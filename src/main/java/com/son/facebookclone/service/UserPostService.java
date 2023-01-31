@@ -11,8 +11,6 @@ public interface UserPostService {
 	
 	void savePost(PostRequest postRequest);
 	void updatePost(long postId, PostRequest postRequest);
-	void addPostImage(long postId, MultipartFile file);
-	void updateImage(long postId, MultipartFile file);
 	void deletePost(long postId);
 	PostResponse getPostById(long postId);
 	List<PostResponse> getPostByUserProfile(Long profileId);

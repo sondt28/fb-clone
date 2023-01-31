@@ -15,9 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.son.facebookclone.dto.PostRequest;
 import com.son.facebookclone.dto.PostResponse;
@@ -53,20 +51,6 @@ public class UserPostController {
 										HttpStatus.BAD_REQUEST);
 		service.savePost(postRequest);
 		return new ResponseEntity<>(HttpStatus.CREATED);
-	}
-	
-	@PostMapping("{postId}")
-	public Object savePostImage(@PathVariable("postId") long postId, 
-							@RequestParam("file") MultipartFile file) {
-		service.addPostImage(postId, file);
-		return new ResponseEntity<>(HttpStatus.CREATED);
-	}
-	
-	@PutMapping("/image/{postId}")
-	public Object updatePostImage(@PathVariable("postId") long postId, 
-							@RequestParam("file") MultipartFile file) {
-		service.updateImage(postId, file);
-		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
 	@PutMapping("{postId}")
