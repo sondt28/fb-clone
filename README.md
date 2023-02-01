@@ -6,5 +6,5 @@
 - Đăng post (text only).
 - Hiển thị các post của profile đã theo dõi.
 - Thích và bình luận post.
-# Sử dụng:
+# Cách chạy project
 clone project > mở file index.html trong thư mục font_end/facebook_clone
