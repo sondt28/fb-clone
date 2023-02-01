@@ -1,0 +1,23 @@
+.main {
+    width: 65%;
+    margin: auto;
+}
+
+/* .content {
+    width: 50%;
+    margin: 35px auto;
+} */
+
+.updateUser {
+    display: none;
+}
+
+.postComment {
+    overflow: hidden;
+    max-width: 60ch;
+}
+
+.postWrittenText {
+    overflow: hidden;
+    max-width: 60ch;
+}
